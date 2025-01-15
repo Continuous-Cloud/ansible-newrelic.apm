@@ -1,0 +1,96 @@
+---
+argument_specs:
+  main:
+    short_description: Main entry point for the php role
+    description:
+      - This is the main entrypoint for the php role.
+    options:
+      php_license_key:
+        type: "str"
+        required: true
+        description:
+          - The New Relic license key to use when installing and configuring this agent.
+
+      php_application_entity_name:
+        type: "str"
+        required: false
+        default: ""
+        description:
+          - The default New Relic entity name for php applications on this host.
+          - This name can be overridden using application config files. See New Relic documentation for examples.
+          - >-
+            If no name is provided, New Relic uses a generic entity name. It is recommended to set this parameter
+            so application data is not incorrectly aggregated.
+
+      php_log_level:
+        type: "str"
+        required: false
+        default: info
+        description:
+          - The New Relic agent's log level.
+
+      php_daemon_detect_aws:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether this agent should detect and report usage in an AWS environment."
+
+      php_daemon_detect_azure:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether this agent should detect and report usage in an Azure environment."
+
+      php_daemon_detect_gcp:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether this agent should detect and report usage in a GCP environment."
+
+      php_daemon_detect_pcf:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether this agent should detect and report usage in a PCF environment."
+
+      php_daemon_detect_docker:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether this agent should detect and report usage in a docker environment."
+
+      php_daemon_detect_kubernetes:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether this agent should detect and report usage in a kubernetes environment."
+
+      php_additional_bin_paths:
+        type: "list"
+        elements: "str"
+        required: false
+        description: A list of paths with PHP binaries, if PHP was installed in a non-traditional way.
+        default: []
+
+      php_restart_web_service:
+        type: "str"
+        required: false
+        description: >-
+          The name of the web service that PHP uses, like nginx or httpd. If this name is provided,
+          the service will be restarted when necessary
+        default: ""
+        
+      php_ini_config_dirs:
+        type: "list"
+        elements: str
+        required: false
+        default: []
+        description: >-
+          A list of paths on the remote host to place the PHP agent configuration. If not set, the role will
+          attempt to find any locations based on usual install directories.
+
+      php_force_update:
+        type: "bool"
+        required: false
+        default: false
+        description: "Whether the agent install/update should be forced."

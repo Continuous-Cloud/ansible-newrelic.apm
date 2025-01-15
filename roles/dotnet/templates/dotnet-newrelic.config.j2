@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<!-- Copyright (c) 2008-2019 New Relic, Inc.  All rights reserved. -->
+<!-- For more information see: https://newrelic.com/docs/dotnet/dotnet-agent-configuration -->
+<configuration xmlns="urn:newrelic-config" agentEnabled="true">
+  <service licenseKey="{{ dotnet_license_key }}" />
+  
+  <application>
+    {% if dotnet_application_entity_name %}
+    <name>{{ dotnet_application_entity_name }}</name>
+    {% endif %}
+  </application>
+
+  <log level="{{ dotnet_log_level }}" />
+  <transactionTracer enabled="true" transactionThreshold="apdex_f" stackTraceThreshold="500" recordSql="obfuscated" explainEnabled="false" explainThreshold="500" />
+  <crossApplicationTracer enabled="{{ dotnet_enable_distributed_tracing | ternary('false', 'true') }}" />
+  <distributedTracing enabled="{{ dotnet_enable_distributed_tracing | ternary('true', 'false') }}" />
+
+  <errorCollector enabled="true">
+    <ignoreClasses>
+      {% for class in dotnet_error_collector_ignore_classes %}
+      <errorClass>{{ class }}</errorClass>
+      {% endfor %}
+    </ignoreClasses>
+    <ignoreStatusCodes>
+      {% for code in dotnet_error_collector_ignore_status_codes %}
+      <code>{{ code }}</code>
+      {% endfor %}
+    </ignoreStatusCodes>
+    <expectedStatusCodes>{{ dotnet_error_collector_expected_status_codes | join(',') }}</expectedStatusCodes>
+  </errorCollector>
+  
+  <browserMonitoring autoInstrument="{{ dotnet_browser_enable_autoinstrument | string | lower }}">
+    <requestPathsExcluded>
+      {% for path in dotnet_browser_request_paths_excluded %}
+      <path regex="{{ path }}"/>
+      {% endfor %}
+    </requestPathsExcluded>
+    <attributes enabled="true">
+    </attributes>
+  </browserMonitoring>
+  <appSettings>
+    <add key="EnableAspNetCore6PlusBrowserInjection" value="{{ dotnet_browser_enable_autoinstrument | string | lower }}" />
+  </appSettings>
+
+  <threadProfiling>
+    <ignoreMethod>System.Threading.WaitHandle:InternalWaitOne</ignoreMethod>
+    <ignoreMethod>System.Threading.WaitHandle:WaitAny</ignoreMethod>
+  </threadProfiling>
+    
+  <labels>
+    {% for k,v in dotnet_labels.items() %}
+      {{ k }}:{{ v }}
+    {% endfor %}
+  </labels>
+</configuration>

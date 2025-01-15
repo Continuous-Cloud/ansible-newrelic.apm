@@ -1,0 +1,7 @@
+---
+- name: New Relic - Restart PHP Web Server
+  ansible.builtin.service:
+    name: "{{ php_restart_web_service }}"
+    state: restarted
+  when: php_restart_web_service
+  listen: newrelic restart php web

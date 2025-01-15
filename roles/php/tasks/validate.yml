@@ -1,0 +1,34 @@
+---
+- name: Validate Entity Name
+  block:
+    - name: Check APM Entity Name
+      ansible.builtin.fail:
+        msg: >-
+          Application name ({{ apm_php_entity_name }}) does not match our best practices!
+          apm_php_entity_name should match the pattern '{Product}-{Environment}-{App/Desc}-...'
+      when: >-
+        apm_php_entity_name is not defined or
+        apm_php_entity_name is not regex('^(?:\w+-){2}\w+')
+  rescue:
+    - name: Fail Because Variable apm_php_entity_name is not defined
+      ansible.builtin.fail:
+        msg: >-
+          Variable apm_php_entity_name is required but is not defined.
+          Define it in your playbook and retry.
+      when: >-
+        ansible_failed_result.msg is search("The error was: 'apm_php_entity_name' is undefined.")
+    - name: Fail Because apm_php_entity_name Contains An Undefined Variable
+      ansible.builtin.fail:
+        msg:
+          - The variable apm_php_entity_name contains an undefined variable.
+          - >-
+              This frequently happens because you used 'common' in apm_php_entity_name
+              but the common role was not included in the play.
+          - The original error is in the tasks above.
+      when: >-
+        ansible_failed_result.msg is
+        search("The task includes an option with an undefined variable")
+    - name: Fail Because Variable apm_php_entity_name Does Not Meet Our Best Practices
+      ansible.builtin.fail:
+        msg: "{{ ansible_failed_result.msg }}"
+      when: not apm_php_ignore_entity_name_best_practices

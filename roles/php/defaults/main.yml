@@ -1,0 +1,17 @@
+---
+php_force_update: false
+php_ini_config_dirs: []
+
+php_application_entity_name: ""
+
+php_log_level: info
+
+php_daemon_detect_aws: false
+php_daemon_detect_azure: false
+php_daemon_detect_gcp: false
+php_daemon_detect_pcf: false
+php_daemon_detect_docker: false
+php_daemon_detect_kubernetes: false
+
+php_additional_bin_paths: []
+php_restart_web_service: ''

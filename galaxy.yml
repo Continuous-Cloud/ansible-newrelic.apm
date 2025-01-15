@@ -1,0 +1,24 @@
+---
+namespace: newrelic
+name: apm
+version: '1.0.0'
+readme: README.md
+authors:
+  - Continuous Cloud <continuouscloud.io>
+description: >-
+  Modules and roles for managing New Relic APM agents
+
+license:
+  - 'GPL-3.0-or-later'
+
+license_file: ''
+
+tags: []
+
+dependencies:
+  newrelic.core: '*'
+
+repository:
+
+build_ignore:
+  - .venv

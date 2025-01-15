@@ -1,0 +1,27 @@
+---
+- name: Include PHP Agent Config Tasks
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/Linux/config.yml"
+
+- name: Get The Latest Agent Version Available
+  ansible.builtin.set_fact:
+    _latest_php_agent: "{{ lookup('newrelic.apm.latest_php_agent_version') }}"
+  run_once: True
+
+- name: Get The Agent Version On The Remote Host
+  ansible.builtin.command: newrelic-daemon --version
+  failed_when: False
+  changed_when: False
+  register: _daemon_version_check
+
+- name: Parse The Installed Version
+  ansible.builtin.set_fact:
+    _installed_php_agent: >-
+      {{ _daemon_version_check.stdout_lines[0] | default('') |
+      regex_replace('New Relic daemon version ([\d\.]+)-.*', '\1') }}
+
+- name: Include Install Tasks
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/Linux/install.yml"
+  when: >-
+    php_force_update or 
+    not _installed_php_agent or 
+    _latest_php_agent is version(_installed_php_agent, '>')

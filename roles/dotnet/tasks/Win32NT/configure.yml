@@ -1,0 +1,20 @@
+---
+- name: Template Config
+  ansible.windows.win_template:
+    src: dotnet-newrelic.config.j2
+    dest: "{{ dotnet_vars.config_dir }}\\newrelic.config"
+
+- name: Set COR Profiler Environment Variables
+  ansible.windows.win_environment:
+    state: present
+    name: "{{ _nr_env_var.name }}"
+    value: "{{ _nr_env_var.value }}"
+    level: machine
+  loop:
+    - name: COR_PROFILER
+      value: '{71DA0A04-7777-4EC6-9643-7D28B46A8A41}'
+    - name: COR_ENABLE_PROFILING
+      value: 1
+  loop_control:
+    label: "{{ _nr_env_var.name }}"
+    loop_var: _nr_env_var

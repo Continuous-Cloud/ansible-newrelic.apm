@@ -1,0 +1,30 @@
+---
+# ARM isnt supported via package manager yet, so new relic recommends installing via tarball
+# Since we need to do that for ARM and all of amazon linux, we may as well do it for everything
+- name: Install Tar
+  ansible.builtin.package:
+    name: tar
+    state: present
+
+# We download from the archive because New Relic has uploaded a new package to release
+# and not updated the version feed, which breaks this step.
+- name: Download the Tar Package
+  ansible.builtin.unarchive:
+    src: "https://download.newrelic.com/php_agent/archive/{{ _latest_php_agent }}/\
+          newrelic-php5-{{ _latest_php_agent }}-linux.tar.gz"
+    dest: /tmp/
+    remote_src: True
+
+- name: Run The Install Script   # noqa: no-changed-when
+  ansible.builtin.shell: ./newrelic-install install
+  args:
+    chdir: /tmp/newrelic-php5-{{ _latest_php_agent }}-linux
+  notify: newrelic restart php web
+  environment:
+    NR_INSTALL_SILENT: "1"
+    NR_INSTALL_PATH: "{{ php_additional_bin_paths }}"
+
+- name: Remove The Installer
+  ansible.builtin.file:
+    state: absent
+    path: /tmp/newrelic-php5-{{ _latest_php_agent }}-linux

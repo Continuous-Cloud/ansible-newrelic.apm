@@ -1,0 +1,28 @@
+---
+galaxy_info:
+  role_name: php
+  author: Continuous Cloud
+  description: Install the new relic php apm agent
+  company: Continuous Cloud
+
+  license: GPL-3.0-or-later
+  min_ansible_version: '2.9'
+
+  platforms:
+    - name: Ubuntu
+      versions:
+        - focal
+    - name: Amazon Linux
+      version:
+        - '2023'
+    - name: EL
+      versions:
+        - '8'
+        - '7'
+
+  galaxy_tags:
+    - newrelic
+    - monitoring
+    - apm
+
+dependencies: []

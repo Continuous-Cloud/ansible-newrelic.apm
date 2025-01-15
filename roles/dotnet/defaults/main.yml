@@ -1,0 +1,21 @@
+---
+dotnet_application_entity_name: ""
+
+dotnet_log_level: info
+dotnet_enable_distributed_tracing: true
+
+dotnet_error_collector_ignore_classes:
+  - System.IO.FileNotFoundException
+  - System.Threading.ThreadAbortException
+dotnet_error_collector_ignore_status_codes:
+  - 401
+  - 404
+dotnet_error_collector_expected_status_codes:
+  - 400
+
+dotnet_browser_enable_autoinstrument: true
+dotnet_browser_request_paths_excluded: []
+
+dotnet_labels: {}
+
+dotnet_stop_iis_to_allow_update: False

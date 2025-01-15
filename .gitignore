@@ -1,0 +1,8 @@
+__pycache__
+continuouscloud-newrelic-*.tar.gz
+
+# ansible lint
+.cache
+
+# molecule
+roles/*/molecule/*/terraform

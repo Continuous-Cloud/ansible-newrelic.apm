@@ -1,0 +1,21 @@
+---
+- name: Autodetect PHP Config Dirs
+  ansible.builtin.shell: find /etc /opt -type d -name php.d -print
+  changed_when: False
+  register: _php_conf_auto_detect
+  when: not php_ini_config_dirs
+
+- name: Template New Relic PHP INI Over
+  ansible.builtin.template:
+    src: php-newrelic.ini.j2
+    dest: "{{ _ini_config_dir }}/newrelic.ini"
+    mode: '0644'
+    owner: root
+    group: root
+  notify: newrelic restart php web
+  loop: >-
+    {{ php_ini_config_dirs |
+    ternary(php_ini_config_dirs, _php_conf_auto_detect.stdout_lines) |
+    unique }}
+  loop_control:
+    loop_var: _ini_config_dir

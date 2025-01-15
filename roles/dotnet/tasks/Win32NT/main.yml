@@ -1,0 +1,71 @@
+---
+- name: Check For Agent DLL On Remote Host
+  community.windows.win_file_version:
+    path: "{{ dotnet_vars.directories.install }}\\NewRelic.Api.Agent.dll"
+  register: _agent_remote_version
+  failed_when: False
+
+- name: Check Installed Version Against Latest
+  when: _agent_remote_version.win_file_version.file_version is defined
+  block:
+    - name: Get Latest Dotnet Agent Version
+      ansible.builtin.set_fact:
+        _agent_latest_version: "{{ lookup('newrelic.apm.latest_dotnet_agent_version') }}"
+      run_once: True
+    - name: Print Versions
+      ansible.builtin.debug:
+        verbosity: 2
+        msg:
+          - The latest new relic dotnet agent version is {{ _agent_latest_version }}
+          - >-
+              The remote host has version
+              {{ _agent_remote_version.win_file_version.file_version }} installed
+
+- name: Install or Update .Net Agent
+  when: >-
+    _agent_remote_version.win_file_version.file_version is not defined or
+    _agent_remote_version.win_file_version.file_version is version(_agent_latest_version, '<')
+  block:
+    - name: Check for IIS
+      ansible.windows.win_service_info:
+        name: W3SVC
+      register: _iis_service
+    - name: Agent Update Available but Not Installed
+      ansible.builtin.debug:
+        msg:
+          - '*************'
+          - ''
+          - There is a New Relic Dotnet Agent update available, but it was not able to be installed. You can
+          - enable the update by setting dotnet_stop_iis_to_allow_update to True but
+          - '***this will stop IIS***!!!'
+          - Your version is {{ _agent_remote_version.win_file_version.file_version }} and the new version is
+          - "{{ _agent_latest_version }}"
+          - ''
+          - '*************'
+      when: >-
+        _iis_service.exists and
+        not dotnet_stop_iis_to_allow_update and
+        _agent_remote_version.win_file_version.file_version is defined
+    - name: Agent First Time Install Skipped
+      ansible.builtin.fail:
+        msg:
+          - '*************'
+          - ''
+          - For safety reasons, we skipped the first time install of the New Relic Dotnet Agent.
+          - To proceed with the install, you need to set dotnet_stop_iis_to_allow_update to True, but
+          - '***this will stop IIS***!!!'
+          - IIS will be restarted afterwards.
+          - ''
+          - '*************'
+      when: >-
+        _iis_service.exists and
+        not dotnet_stop_iis_to_allow_update and
+        _agent_remote_version.win_file_version.file_version is not defined
+    - name: Include Install or Update Tasks
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
+      when: >-
+        not _iis_service.exists or
+        dotnet_stop_iis_to_allow_update
+
+- name: Include Agent Config Tasks
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/configure.yml"

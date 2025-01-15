@@ -1,0 +1,37 @@
+;
+; Copyright 2020 New Relic Corporation. All rights reserved.
+; SPDX-License-Identifier: Apache-2.0
+;
+
+; This file contains the various settings for the New Relic PHP agent. There
+; are many options, all of which are described in detail at the following URL:
+; https://docs.newrelic.com/docs/agents/php-agent/configuration/php-agent-configuration
+;
+
+; If you use a full path to the extension you insulate yourself from the
+; extension directory changing if you change PHP installations or versions.
+; If you do not use an absolute path then the file must be installed in the
+; active configuration's extension directory.
+extension = "newrelic.so"
+
+[newrelic]
+newrelic.enabled = true
+newrelic.license = "{{ php_license_key }}"
+{% if php_application_entity_name %}
+newrelic.appname = "{{ php_application_entity_name }}"
+{% endif %}
+
+; Setting: newrelic.loglevel
+;          Must be one of the following values:
+;            always, error, warning, info, verbose, debug, verbosedebug
+;
+newrelic.loglevel = "{{ php_log_level }}"
+newrelic.logfile = "/var/log/newrelic/php_agent.log"
+newrelic.daemon.logfile = "/var/log/newrelic/newrelic-php-daemon.log"
+
+newrelic.daemon.utilization.detect_aws = {{ php_daemon_detect_aws }}
+newrelic.daemon.utilization.detect_azure = {{ php_daemon_detect_azure }}
+newrelic.daemon.utilization.detect_gcp = {{ php_daemon_detect_gcp }}
+newrelic.daemon.utilization.detect_pcf = {{ php_daemon_detect_pcf }}
+newrelic.daemon.utilization.detect_docker = {{ php_daemon_detect_docker }}
+newrelic.daemon.utilization.detect_kubernetes = {{ php_daemon_detect_kubernetes }}
