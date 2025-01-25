@@ -1,0 +1,59 @@
+---
+- name: Download Installer
+  block:
+    - name: Download MSI on Remote Host
+      ansible.windows.win_get_url:
+        url: "{{ dotnet_vars.installer_urls.ansible_architecture }}"
+        dest: 'c:\nrdotnet.msi'
+  rescue:
+    - name: Download MSI on Ansible Host
+      ansible.builtin.get_url:
+        url: "{{ dotnet_vars.installer_urls.ansible_architecture }}"
+        dest: /tmp/nrdotnet_{{ ansible_architecture }}.msi
+      run_once: True
+      become: False
+      delegate_to: localhost
+    - name: Copy Package Over
+      ansible.windows.win_copy:
+        src: /tmp/nrdotnet_{{ ansible_architecture }}.msi
+        dest: 'c:\nrdotnet.msi'
+        remote_src: False
+
+- name: Install Latest Dotnet Agent (No IIS)
+  ansible.windows.win_package:
+    path: 'c:\nrdotnet.msi'
+    arguments: "{{ dotnet_vars.install_args }}"
+    product_id: "{{ dotnet_vars.product_id }}"
+  when: not _iis_service.exists
+
+- name: Stop IIS and Install or Update
+  when: _iis_service.exists and apm_dotnet_allow_update
+  block:
+    - name: Stop IIS
+      ansible.windows.win_service:
+        name: W3SVC
+        state: stopped
+    - name: Install Latest Dotnet Agent (IIS Present)
+      ansible.windows.win_package:
+        path: 'c:\nrdotnet.msi'
+        arguments: "{{ dotnet_vars.install_args }}"
+        product_id: "{{ dotnet_vars.product_id }}"
+  always:
+    - name: Start IIS
+      ansible.windows.win_service:
+        name: W3SVC
+        state: started
+
+- name: Remove Installer if present
+  ansible.windows.win_file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - 'c:\nrdotnet.zip'
+    - 'c:\nrdotnet'
+    - 'c:\nrdotnet.msi'
+
+- name: Make Sure Extensions Dir Exists
+  ansible.windows.win_file:
+    path: "{{ dotnet_vars.directories.extensions }}"
+    state: directory

@@ -1,0 +1,204 @@
+# Do not add anything above this next line.
+common: &default_settings
+
+  # ============================== APP NAME ===============================
+  # Set the name of your application as you'd like it to show up in the New Relic UI.
+  # If enable_auto_app_naming is false, the agent reports all data to this application.
+  # Otherwise, the agent reports only background tasks (transactions for non-web applications)
+  # to this application. To report data to more than one application
+  # (useful for rollup reporting), separate the application names with ";".
+  # For example, to report data to "My Application" and "My Application 2" use this:
+  # app_name: My Application;My Application 2
+  # This setting is required. Up to 3 different application names can be specified.
+  # The first application name must be unique.
+  app_name: {{ dotnet_application_entity_name }}
+
+  license_key: {{ dotnet_license_key }}
+  agent_enabled: true
+  high_security: false
+
+  enable_auto_app_naming: false
+  enable_auto_transaction_naming: true
+
+  log_level: info
+  audit_mode: false
+  log_file_count: 3
+  log_limit_in_kbytes: 1000
+  log_daily: true
+  log_file_name: newrelic_agent.log
+  # Default is the logs directory in the newrelic.jar parent directory.
+  #log_file_path:
+
+  # Provides the ability to forward application logs to New Relic, generate log usage metrics,
+  # and decorate local application log files with agent metadata for use with third party log forwarders.
+  # The application_logging.forwarding and application_logging.local_decorating should not be used together.
+  application_logging:
+    enabled: true
+    forwarding:
+      enabled: true
+
+      # Application log events are collected up to the configured amount. Afterwards,
+      # events are sampled to maintain an even distribution across the harvest cycle.
+      # Default is 10000. Setting to 0 will disable.
+      #max_samples_stored: 10000
+
+    metrics:
+      enabled: true
+
+  #proxy_host: hostname
+  #proxy_port: 8080
+  #proxy_user: username
+  #proxy_password: password
+  #proxy_scheme: https
+
+  max_stack_trace_lines: 30
+  attributes:
+    enabled: true
+
+    #A comma separated list of attribute keys whose values should
+    # be sent to New Relic.
+    #include:
+
+    # A comma separated list of attribute keys whose values should
+    # not be sent to New Relic.
+    #exclude:
+
+  transaction_tracer:
+    enabled: true
+    transaction_threshold: apdex_f
+    record_sql: obfuscated
+    log_sql: false
+    stack_trace_threshold: 0.5
+    explain_enabled: true
+    explain_threshold: 0.5
+    top_n: 20
+
+  # Error collector captures information about uncaught exceptions and
+  # sends them to New Relic for viewing.
+  error_collector:
+    enabled: true
+
+    # Use this property to exclude specific exceptions from being reported as errors
+    # by providing a comma separated list of full class names.
+    ignore_errors: akka.actor.ActorKilledException
+
+    # Use this property to exclude specific http status codes from being reported as errors
+    # by providing a comma separated list of status codes.
+    ignore_status_codes: 404
+
+  # Transaction events are used for histograms and percentiles. Non-aggregated data is collected
+  # for each web transaction and sent to the server on harvest.
+  transaction_events:
+    enabled: true
+    max_samples_stored: 2000
+
+  # Distributed tracing lets you see the path that a request takes through your distributed system.
+  # This replaces the legacy Cross Application Tracing feature.
+  distributed_tracing:
+    enabled: true
+    exclude_newrelic_header: false
+
+  # New Relic's distributed tracing UI uses Span events to display traces across different services.
+  # Span events capture attributes that describe execution context and provide linking metadata.
+  # Span events require distributed tracing to be enabled.
+  span_events:
+    enabled: true
+    max_samples_stored: 2000
+
+    attributes:
+      enabled: true
+
+      # A comma separated list of attribute keys whose values should be sent to New Relic.
+      #include:
+
+      # A comma separated list of attribute keys whose values should not be sent to New Relic.
+      #exclude:
+
+  # Cross Application Tracing adds request and response headers to
+  # external calls using supported HTTP libraries to provide better
+  # performance data when calling applications monitored by other New Relic agents.
+  #
+  # Distributed tracing is replacing cross application tracing as the default
+  # means of tracing between services. To continue using cross application
+  # tracing, enable it with `cross_application_tracer.enabled = true` and
+  # `distributed_tracing.enabled = false`
+  cross_application_tracer:
+
+    # Set to false to disable cross-application tracing.
+    # Default is true.
+    enabled: true
+
+
+  # Thread profiler measures wall clock time, CPU time, and method call counts
+  # in your application's threads as they run.
+  # This feature is not available to Lite accounts and is automatically disabled.
+  thread_profiler:
+
+    # Set to false to disable the thread profiler.
+    # Default is true.
+    enabled: true
+
+  # New Relic Real User Monitoring (RUM) gives you insight into the performance real users are
+  # experiencing with your website. This is accomplished by measuring the time it takes for
+  # your users' browsers to download and render your web pages by injecting a small amount
+  # of JavaScript code into the header and footer of each page.
+  browser_monitoring:
+
+    # By default the agent automatically inserts API calls in compiled JSPs to
+    # inject the monitoring JavaScript into web pages. Not all rendering engines are supported.
+    # See https://docs.newrelic.com/docs/agents/java-agent/instrumentation/new-relic-browser-java-agent#manual_instrumentation
+    # for instructions to add these manually to your pages.
+    # Set this attribute to false to turn off this behavior.
+    auto_instrument: true
+
+  # Class transformer can be used to disable all agent instrumentation or specific instrumentation modules.
+  # All instrumentation modules can be found here: https://github.com/newrelic/newrelic-java-agent/tree/main/instrumentation
+  class_transformer:
+
+    # This instrumentation reports the name of the user principal returned from
+    # HttpServletRequest.getUserPrincipal() when servlets and filters are invoked.
+    com.newrelic.instrumentation.servlet-user:
+      enabled: false
+
+    com.newrelic.instrumentation.spring-aop-2:
+      enabled: false
+
+    # This instrumentation reports metrics for resultset operations.
+    com.newrelic.instrumentation.jdbc-resultset:
+      enabled: false
+
+    # Classes loaded by classloaders in this list will not be instrumented.
+    # This is a useful optimization for runtimes which use classloaders to
+    # load dynamic classes which the agent would not instrument.
+    classloader_excludes:
+      groovy.lang.GroovyClassLoader$InnerLoader,
+      org.codehaus.groovy.runtime.callsite.CallSiteClassLoader,
+      com.collaxa.cube.engine.deployment.BPELClassLoader,
+      org.springframework.data.convert.ClassGeneratingEntityInstantiator$ObjectInstantiatorClassGenerator,
+      org.mvel2.optimizers.impl.asm.ASMAccessorOptimizer$ContextClassLoader,
+      gw.internal.gosu.compiler.SingleServingGosuClassLoader,
+
+  # Real-time profiling using Java Flight Recorder (JFR).
+  # This feature reports dimensional metrics to the ingest endpoint configured by
+  # metric_ingest_uri and events to the ingest endpoint configured by event_ingest_uri.
+  # Both ingest endpoints default to US production but they will be automatically set to EU
+  # production when using an EU license key. Other ingest endpoints can be configured manually.
+  # Requires a JVM that provides the JFR library.
+  jfr:
+
+    # Set to true to enable Real-time profiling with JFR.
+    # Default is false.
+    enabled: false
+
+    # Set to true to enable audit logging which will display all JFR metrics and events in each harvest batch.
+    # Audit logging is extremely verbose and should only be used for troubleshooting purposes.
+    # Default is false.
+    audit_logging: false
+
+  # User-configurable custom labels for this agent.  Labels are name-value pairs.
+  # There is a maximum of 64 labels per agent.  Names and values are limited to 255 characters.
+  # Names and values may not contain colons (:) or semicolons (;).
+  labels:
+
+    # An example label
+    #label_name: label_value

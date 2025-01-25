@@ -1,4 +1,5 @@
 ---
+php_license_key: "{{ newrelic_apm_collection_license_key }}"
 php_force_update: false
 php_ini_config_dirs: []
 

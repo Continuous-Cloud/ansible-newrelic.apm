@@ -1,0 +1,22 @@
+---
+galaxy_info:
+  role_name: dotnet
+  author: Continuous Cloud
+  description: Install the new relic dotnet apm agent
+  company: Continuous Cloud
+
+  license: GPL-3.0-or-later
+  min_ansible_version: '2.9'
+  platforms:
+    - name: Windows
+      versions:
+        - '2019'
+        - '2016'
+        - '2012'
+
+  galaxy_tags:
+    - newrelic
+    - monitoring
+    - apm
+
+dependencies: []

@@ -1,0 +1,4 @@
+---
+newrelic_apm_collection_license_key: >-
+  {{ newrelic_apm_license_key |
+  default(lookup('ansible.builtin.env', 'NEW_RELIC_LICENSE_KEY') | default(Undefined, True)) }}
