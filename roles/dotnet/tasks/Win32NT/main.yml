@@ -5,21 +5,20 @@
   register: _agent_remote_version
   failed_when: False
 
-- name: Check Installed Version Against Latest
+- name: Get Latest Dotnet Agent Version
+  ansible.builtin.set_fact:
+    _agent_latest_version: "{{ lookup('newrelic.apm.latest_dotnet_agent_version') }}"
+  run_once: True
+
+- name: Print Versions
+  ansible.builtin.debug:
+    verbosity: 2
+    msg:
+      - The latest new relic dotnet agent version is {{ _agent_latest_version }}
+      - >-
+          The remote host has version
+          {{ _agent_remote_version.win_file_version.file_version }} installed
   when: _agent_remote_version.win_file_version.file_version is defined
-  block:
-    - name: Get Latest Dotnet Agent Version
-      ansible.builtin.set_fact:
-        _agent_latest_version: "{{ lookup('newrelic.apm.latest_dotnet_agent_version') }}"
-      run_once: True
-    - name: Print Versions
-      ansible.builtin.debug:
-        verbosity: 2
-        msg:
-          - The latest new relic dotnet agent version is {{ _agent_latest_version }}
-          - >-
-              The remote host has version
-              {{ _agent_remote_version.win_file_version.file_version }} installed
 
 - name: Install or Update .Net Agent
   when: >-
