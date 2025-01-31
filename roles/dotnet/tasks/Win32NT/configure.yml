@@ -2,7 +2,7 @@
 - name: Template Config
   ansible.windows.win_template:
     src: dotnet-newrelic.config.j2
-    dest: "{{ dotnet_vars.config_dir }}\\newrelic.config"
+    dest: "{{ dotnet_vars.directories.config }}\\newrelic.config"
 
 - name: Set COR Profiler Environment Variables
   ansible.windows.win_environment:
