@@ -3,12 +3,12 @@
   block:
     - name: Download MSI on Remote Host
       ansible.windows.win_get_url:
-        url: "{{ dotnet_vars.installer_urls[ansible_architecture] }}"
+        url: "{{ dotnet_vars.installer_url }}"
         dest: 'c:\nrdotnet.msi'
   rescue:
     - name: Download MSI on Ansible Host
       ansible.builtin.get_url:
-        url: "{{ dotnet_vars.installer_urls[ansible_architecture] }}"
+        url: "{{ dotnet_vars.installer_url }}"
         dest: /tmp/nrdotnet_{{ ansible_architecture }}.msi
       run_once: True
       become: False

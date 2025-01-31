@@ -2,8 +2,7 @@
 # vars file for newrelic
 dotnet_vars:
   return_codes: [0, 666, 3010, 3221225477]
-  installer_urls:
-    x86_64: 'https://download.newrelic.com/dot_net_agent/latest_release/NewRelicDotNetAgent_x64.msi'
+  installer_urls: 'https://download.newrelic.com/dot_net_agent/latest_release/NewRelicDotNetAgent_x64.msi'
   install_args: NR_LICENSE_KEY={{ dotnet_license_key }} INSTALLLEVEL=50
   directories:
     extensions: 'C:\ProgramData\New Relic\.NET Agent\Extensions'
