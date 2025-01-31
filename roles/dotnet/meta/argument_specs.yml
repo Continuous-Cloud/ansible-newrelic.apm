@@ -8,7 +8,6 @@ argument_specs:
       dotnet_license_key:
         type: "str"
         required: true
-        default: "{{ newrelic_infra_collection_license_key }}"
         description:
           - The New Relic license key to use when installing and configuring this agent.
 
