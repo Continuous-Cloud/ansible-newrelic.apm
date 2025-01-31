@@ -27,7 +27,7 @@
   when: not _iis_service.exists
 
 - name: Stop IIS and Install or Update
-  when: _iis_service.exists and apm_dotnet_allow_update
+  when: _iis_service.exists and dotnet_stop_iis_to_allow_update
   block:
     - name: Stop IIS
       ansible.windows.win_service:
