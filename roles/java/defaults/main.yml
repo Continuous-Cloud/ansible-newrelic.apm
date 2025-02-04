@@ -1,0 +1,20 @@
+---
+java_license_key: "{{ newrelic_apm_collection_license_key }}"
+java_application_entity_name: ""
+
+java_log_level: info
+java_enable_distributed_tracing: true
+
+java_application_logging_enable: true
+java_auto_app_naming_enable: true
+
+java_error_collector_ignore_errors:
+  - akka.actor.ActorKilledException
+java_error_collector_ignore_status_codes:
+  - 404
+  - 401
+  - 400
+
+java_browser_autoinstrument: true
+
+java_labels: {}

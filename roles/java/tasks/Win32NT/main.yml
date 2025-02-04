@@ -1,0 +1,15 @@
+---
+- name: Check For Agent On Remote Host
+  ansible.windows.win_stat:
+    path: "{{ java_vars.directories.install }}"
+  register: _agent_remote_install
+  failed_when: False
+
+- name: Install Java Agent
+  ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
+  when: not _agent_remote_install.stat.exists
+
+- name: Template Config
+  ansible.windows.win_template:
+    src: newrelic.yml.j2
+    dest: "{{ java_vars.directories.config }}\\newrelic.yml"

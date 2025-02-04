@@ -1,0 +1,78 @@
+---
+argument_specs:
+  main:
+    short_description: Main entry point for the java role
+    description:
+      - This is the main entrypoint for the java role.
+    options:
+      java_license_key:
+        type: "str"
+        required: true
+        description:
+          - The New Relic license key to use when installing and configuring this agent.
+
+      java_application_entity_name:
+        type: "str"
+        required: true
+        default: ""
+        description:
+          - The default New Relic entity name for java applications on this host.
+          - This name can be overridden using application config files. See New Relic documentation for examples.
+          - >-
+            If no name is provided, New Relic uses a generic entity name. It is recommended to set this parameter
+            so application data is not incorrectly aggregated.
+
+      java_application_logging_enable:
+        type: "bool"
+        required: false
+        default: true
+        description: If true, application logging will be sent to new relic
+
+      java_auto_app_naming_enable:
+        type: "bool"
+        required: false
+        default: true
+        description: If true, new relic will detect and name apps automatically
+
+      java_log_level:
+        type: "str"
+        required: false
+        default: info
+        description:
+          - The New Relic agent's log level.
+
+      java_enable_distributed_tracing:
+        type: "bool"
+        required: false
+        default: true
+        description: "Whether distributed tracing should be enabled for this agent."
+
+      java_error_collector_ignore_errors:
+        type: "list"
+        elements: "str"
+        required: false
+        description: A list of class names that should be ignored when the agent collects error data
+        default:
+          - akka.actor.ActorKilledException
+
+      java_error_collector_ignore_status_codes:
+        type: "list"
+        elements: "int"
+        required: false
+        description: A list of HTTP status codes be ignored when the agent collects error data
+        default:
+          - 404
+          - 401
+          - 400
+
+      java_browser_autoinstrument:
+        type: "bool"
+        required: false
+        default: true
+        description: "Whether browser transactions should be automatically instrumented by the agent."
+
+      java_labels:
+        type: "dict"
+        required: false
+        default: {}
+        description: "A set of key value pairs that will be labels added to the application entity in New Relic."

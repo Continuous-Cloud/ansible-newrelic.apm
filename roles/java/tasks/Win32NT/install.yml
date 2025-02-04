@@ -1,0 +1,36 @@
+---
+- name: Download Installer
+  block:
+    - name: Download MSI on Remote Host
+      ansible.windows.win_get_url:
+        url: "{{ java_vars.installer_url }}"
+        dest: 'c:\java.zip'
+  rescue:
+    - name: Download MSI on Ansible Host
+      ansible.builtin.get_url:
+        url: "{{ dotnet_vars.installer_url }}"
+        dest: /tmp/nrjava.zip
+      run_once: True
+      become: False
+      delegate_to: localhost
+    - name: Copy Package Over
+      ansible.windows.win_copy:
+        src: /tmp/nrjava.zip
+        dest: 'c:\java.zip'
+        remote_src: False
+
+- name: Unzip The Package
+  ansible.windows.win_unzip:
+    src:  'c:\java.zip'
+    remote_src: True
+    dest: 'c:\nrjava'
+    delete_archive: True
+
+- name: Rename Agent Files
+  ansible.windows.win_shell: >-
+    Move-item 'c:\nrjava\newrelic' '{{ java_vars.directories.install }}'
+
+- name: Clean Up
+  ansible.windows.win_file:
+    path: c:\nrjava
+    state: absent
