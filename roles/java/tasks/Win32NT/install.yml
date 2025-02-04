@@ -20,7 +20,7 @@
         remote_src: False
 
 - name: Unzip The Package
-  ansible.windows.win_unzip:
+  community.windows.win_unzip:
     src:  'c:\java.zip'
     remote_src: True
     dest: 'c:\nrjava'
