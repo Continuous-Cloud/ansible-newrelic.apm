@@ -3,5 +3,7 @@
 java_vars:
   installer_url: 'https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip'
   directories:
-    config: 'C:\ProgramData\newrelic-java'
-    install: 'C:\ProgramData\newrelic-java'
+    # when passing spaces in the name to the jvm, it should be quoted
+    # "-javaagent:C:\Program Files\New Relic\newrelic-java\newrelic.jar"
+    config: 'C:\Program Files\New Relic\newrelic-java'
+    install: 'C:\Program Files\New Relic\newrelic-java'
