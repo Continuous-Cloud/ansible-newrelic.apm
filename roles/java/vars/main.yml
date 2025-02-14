@@ -3,5 +3,5 @@
 java_vars:
   installer_url: 'https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip'
   directories:
-    config: 'C:\Program Files\New Relic\newrelic-java'
-    install: 'C:\Program Files\New Relic\newrelic-java'
+    config: 'C:\ProgramData\newrelic-java'
+    install: 'C:\ProgramData\newrelic-java'
