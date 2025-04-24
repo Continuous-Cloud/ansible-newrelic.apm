@@ -1,5 +1,6 @@
 ---
 java_license_key: "{{ newrelic_apm_collection_license_key }}"
+java_executable: java.exe
 
 java_log_level: info
 java_enable_distributed_tracing: true

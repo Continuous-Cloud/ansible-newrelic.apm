@@ -14,7 +14,7 @@
       run_once: True
     - name: Get Remote Agent Version
       ansible.windows.win_command: >-
-        java -jar '{{ java_vars.directories.install }}\newrelic.jar' -v
+        & '{{ java_executable }}' -jar '{{ java_vars.directories.install }}\newrelic.jar' -v
       register: _remote_version
 
 - name: Install Java Agent

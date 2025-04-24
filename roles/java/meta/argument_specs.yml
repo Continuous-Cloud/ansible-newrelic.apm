@@ -75,3 +75,9 @@ argument_specs:
         required: false
         default: {}
         description: "A set of key value pairs that will be labels added to the application entity in New Relic."
+
+      java_executable:
+        type: str
+        required: false
+        default: java.exe
+        description: The java executable to use for testing the NR agent jar. This can be a relative or absolute path.
