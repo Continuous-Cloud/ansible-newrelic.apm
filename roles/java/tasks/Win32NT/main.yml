@@ -5,9 +5,23 @@
   register: _agent_remote_install
   failed_when: False
 
+- name: Check Remote Agent Version
+  when: _agent_remote_install.stat.exists
+  block:
+    - name: Get Latest Java Agent Version
+      ansible.builtin.set_fact:
+        _agent_latest_version: "{{ lookup('newrelic.apm.latest_java_agent_version') }}"
+      run_once: True
+    - name: Get Remote Agent Version
+      ansible.windows.win_command: >-
+        java -jar '{{ java_vars.directories.install }}\newrelic.jar' -v
+      register: _remote_version
+
 - name: Install Java Agent
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
-  when: not _agent_remote_install.stat.exists
+  when: >-
+    not _agent_remote_install.stat.exists or
+    _remote_version.stdout_lines[-1] is version(_agent_latest_version, '<')
 
 - name: Template Config
   ansible.windows.win_template:
