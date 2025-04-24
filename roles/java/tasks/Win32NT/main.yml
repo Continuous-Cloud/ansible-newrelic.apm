@@ -11,11 +11,12 @@
     - name: Get Latest Java Agent Version
       ansible.builtin.set_fact:
         _agent_latest_version: "{{ lookup('newrelic.apm.latest_java_agent_version') }}"
-      run_once: True
+      run_once: true
     - name: Get Remote Agent Version
-      ansible.windows.win_command: >-
+      ansible.windows.win_shell: >-
         & '{{ java_executable }}' -jar '{{ java_vars.directories.install }}\newrelic.jar' -v
       register: _remote_version
+      changed_when: false
 
 - name: Install Java Agent
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
