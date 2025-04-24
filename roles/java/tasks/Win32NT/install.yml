@@ -26,9 +26,14 @@
     dest: 'c:\nrjava'
     delete_archive: True
 
+- name: Create The Install Directory
+  ansible.windows.win_file:
+    path: '{{ java_vars.directories.install }}'
+    state: directory
+
 - name: Rename Agent Files
   ansible.windows.win_shell: >-
-    Move-item 'c:\nrjava\newrelic' '{{ java_vars.directories.install }}'
+    Move-item 'c:\nrjava\newrelic\*' '{{ java_vars.directories.install }}\'
 
 - name: Clean Up
   ansible.windows.win_file:
