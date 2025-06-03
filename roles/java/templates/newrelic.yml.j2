@@ -12,7 +12,7 @@ common: &default_settings
   # Set the name of your application as you'd like it to show up in the New Relic UI.
   # If enable_auto_app_naming is false, the agent reports all data to this application.
   # Otherwise, the agent reports only background tasks (transactions for non-web applications)
-  # to this application. To report data to more than one application 
+  # to this application. To report data to more than one application
   # (useful for rollup reporting), separate the application names with ";".
   # For example, to report data to "My Application" and "My Application 2" use this:
   # app_name: My Application;My Application 2
@@ -79,7 +79,7 @@ common: &default_settings
 
   # The log file directory.
   # Default is the logs directory in the newrelic.jar parent directory.
-  #log_file_path:
+  log_file_path: 'c:\ProgramData\newrelic\newrelic-java'
 
   # Provides the ability to forward application logs to New Relic, generate log usage metrics,
   # and decorate local application log files with agent metadata for use with third party log forwarders.
@@ -103,16 +103,16 @@ common: &default_settings
   max_stack_trace_lines: 30
 
   # Provides the ability to configure the attributes sent to New Relic. These
-  # attributes can be found in transaction traces, traced errors,  
+  # attributes can be found in transaction traces, traced errors,
   # transaction events, and page views.
   attributes:
     enabled: true
-    
-    #A comma separated list of attribute keys whose values should 
+
+    #A comma separated list of attribute keys whose values should
     # be sent to New Relic.
     #include:
-    
-    # A comma separated list of attribute keys whose values should 
+
+    # A comma separated list of attribute keys whose values should
     # not be sent to New Relic.
     #exclude:
 
@@ -136,7 +136,7 @@ common: &default_settings
     ignore_status_codes: {{ java_error_collector_ignore_status_codes | join(',') }}
 
   # Transaction events are used for histograms and percentiles. Non-aggregated data is collected
-  # for each web transaction and sent to the server on harvest. 
+  # for each web transaction and sent to the server on harvest.
   transaction_events:
     enabled: true
     max_samples_stored: 2000
@@ -194,7 +194,7 @@ common: &default_settings
   # New Relic Real User Monitoring (RUM) gives you insight into the performance real users are
   # experiencing with your website. This is accomplished by measuring the time it takes for
   # your users' browsers to download and render your web pages by injecting a small amount
-  # of JavaScript code into the header and footer of each page. 
+  # of JavaScript code into the header and footer of each page.
   browser_monitoring:
     auto_instrument: {{ java_browser_autoinstrument }}
 
@@ -202,7 +202,7 @@ common: &default_settings
   # All instrumentation modules can be found here: https://github.com/newrelic/newrelic-java-agent/tree/main/instrumentation
   class_transformer:
 
-    # This instrumentation reports the name of the user principal returned from 
+    # This instrumentation reports the name of the user principal returned from
     # HttpServletRequest.getUserPrincipal() when servlets and filters are invoked.
     com.newrelic.instrumentation.servlet-user:
       enabled: false
