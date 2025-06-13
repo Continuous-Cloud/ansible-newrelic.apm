@@ -22,7 +22,8 @@
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
   when: >-
     not _agent_remote_install.stat.exists or
-    _remote_version.stdout_lines[-1] is version(_agent_latest_version, '<')
+    (_remote_version.stdout_lines[-1] is version(_agent_latest_version, '<') and
+    java_upgrade_agent)
 
 - name: Template Config
   ansible.windows.win_template:

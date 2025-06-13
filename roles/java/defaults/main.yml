@@ -1,4 +1,5 @@
 ---
+java_upgrade_agent: false
 java_license_key: "{{ newrelic_apm_collection_license_key }}"
 java_executable: java.exe
 
@@ -11,7 +12,9 @@ java_auto_app_naming_enable: true
 java_error_collector_ignore_errors:
   - akka.actor.ActorKilledException
 java_error_collector_ignore_status_codes:
+  - 405
   - 404
+  - 403
   - 401
   - 400
 

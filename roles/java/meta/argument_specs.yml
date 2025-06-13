@@ -60,7 +60,9 @@ argument_specs:
         required: false
         description: A list of HTTP status codes be ignored when the agent collects error data
         default:
+          - 405
           - 404
+          - 403
           - 401
           - 400
 
@@ -81,3 +83,11 @@ argument_specs:
         required: false
         default: java.exe
         description: The java executable to use for testing the NR agent jar. This can be a relative or absolute path.
+
+      java_upgrade_agent:
+        type: bool
+        required: false
+        default: false
+        description: >-
+          If true, the agent will be upgraded if a newer version is available. You must stop the application
+          service before running this role and start the service after.
