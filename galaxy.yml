@@ -16,7 +16,7 @@ license_file: ''
 tags: []
 
 dependencies:
-  newrelic.core: '*'
+  'git+https://github.com/Continuous-Cloud/ansible-newrelic.core.git': 'main'
 
 repository:
 
