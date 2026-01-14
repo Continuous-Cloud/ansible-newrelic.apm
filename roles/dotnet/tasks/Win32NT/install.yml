@@ -9,13 +9,13 @@
     - name: Download MSI on Ansible Host
       ansible.builtin.get_url:
         url: "{{ dotnet_vars.installer_url }}"
-        dest: /tmp/nrdotnet_{{ ansible_architecture }}.msi
+        dest: /tmp/nrdotnet_{{ ansible_facts.architecture }}.msi
       run_once: True
       become: False
       delegate_to: localhost
     - name: Copy Package Over
       ansible.windows.win_copy:
-        src: /tmp/nrdotnet_{{ ansible_architecture }}.msi
+        src: /tmp/nrdotnet_{{ ansible_facts.architecture }}.msi
         dest: 'c:\nrdotnet.msi'
         remote_src: False
 

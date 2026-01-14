@@ -3,8 +3,8 @@
   ansible.builtin.setup:
     gather_subset:
       - system
-  when: ansible_system is not defined
+  when: ansible_facts.system is not defined
 
 - name: Include Linux Tasks
   ansible.builtin.include_tasks: "{{ role_path }}/tasks/Linux/main.yml"
-  when: ansible_system == 'Linux'
+  when: ansible_facts.system == 'Linux'
