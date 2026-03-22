@@ -26,21 +26,31 @@
     dest: 'c:\nrjava'
     delete_archive: True
 
-- name: Remove The Install Directory
-  ansible.windows.win_file:
-    path: '{{ java_vars.directories.install }}'
-    state: absent
-
-- name: Create New Relic Directory
-  ansible.windows.win_file:
-    path: '{{ java_vars.directories.install | win_dirname }}'
-    state: directory
-
-- name: Rename Agent Files
-  ansible.windows.win_shell: >-
-    Move-item -path 'c:\nrjava\newrelic' -destination '{{ java_vars.directories.install }}'
-
-- name: Clean Up
-  ansible.windows.win_file:
-    path: c:\nrjava
-    state: absent
+- name: Install agent
+  block:
+    - name: Stop windows services
+      ansible.windows.win_service:
+        name: "{{ item }}"
+        state: stopped
+      loop: "{{ java_upgrade_agent_restart_services }}"
+    - name: Remove The Install Directory
+      ansible.windows.win_file:
+        path: '{{ java_vars.directories.install }}'
+        state: absent
+    - name: Create New Relic Directory
+      ansible.windows.win_file:
+        path: '{{ java_vars.directories.install | win_dirname }}'
+        state: directory
+    - name: Rename Agent Files
+      ansible.windows.win_shell: >-
+        Move-item -path 'c:\nrjava\newrelic' -destination '{{ java_vars.directories.install }}'
+  always:
+    - name: Clean Up
+      ansible.windows.win_file:
+        path: c:\nrjava
+        state: absent
+    - name: Start windows services
+      ansible.windows.win_service:
+        name: "{{ item }}"
+        state: running
+      loop: "{{ java_upgrade_agent_restart_services }}"

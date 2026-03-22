@@ -1,5 +1,6 @@
 ---
 java_upgrade_agent: false
+java_upgrade_agent_restart_services: []
 java_license_key: "{{ newrelic_apm_collection_license_key }}"
 java_executable: java.exe
 

@@ -91,3 +91,10 @@ argument_specs:
         description: >-
           If true, the agent will be upgraded if a newer version is available. You must stop the application
           service before running this role and start the service after.
+
+      java_upgrade_agent_restart_services:
+        type: "list"
+        elements: "str"
+        required: false
+        description: A list of windows services that need to be stopped and restarted for the APM agent update to succeed.
+        default: []
