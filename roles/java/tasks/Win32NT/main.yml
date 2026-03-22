@@ -18,14 +18,19 @@
       register: _remote_version
       changed_when: false
 
-- name: Install Java Agent
-  ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
-  when: >-
-    not _agent_remote_install.stat.exists or
-    (_remote_version.stdout_lines[-1] is version(_agent_latest_version, '<') and
-    java_upgrade_agent)
-
-- name: Template Config
-  ansible.windows.win_template:
-    src: newrelic.yml.j2
-    dest: "{{ java_vars.directories.config }}\\newrelic.yml"
+- name: Config Java Agent
+  vars:
+    _java_agent_install_needed: >-
+      {{ not _agent_remote_install.stat.exists or
+      (_remote_version.stdout_lines[-1] is version(_agent_latest_version, '<') and
+      java_upgrade_agent) }}
+  block:
+    - name: Include install and config tasks
+      ansible.builtin.include_tasks: "{{ role_path }}/tasks/Win32NT/install.yml"
+  always:
+    - name: Start windows services
+      ansible.windows.win_service:
+        name: "{{ item }}"
+        state: started
+      loop: "{{ java_upgrade_agent_restart_services }}"
+      when: _java_agent_install_needed

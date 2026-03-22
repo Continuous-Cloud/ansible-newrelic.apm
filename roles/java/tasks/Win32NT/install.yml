@@ -1,5 +1,6 @@
 ---
 - name: Download Installer
+  when: _java_agent_install_needed
   block:
     - name: Download MSI on Remote Host
       ansible.windows.win_get_url:
@@ -19,15 +20,15 @@
         dest: 'c:\java.zip'
         remote_src: False
 
-- name: Unzip The Package
-  community.windows.win_unzip:
-    src:  'c:\java.zip'
-    remote_src: True
-    dest: 'c:\nrjava'
-    delete_archive: True
-
 - name: Install agent
+  when: _java_agent_install_needed
   block:
+    - name: Unzip The Package
+      community.windows.win_unzip:
+        src:  'c:\java.zip'
+        remote_src: True
+        dest: 'c:\nrjava'
+        delete_archive: True
     - name: Stop windows services
       ansible.windows.win_service:
         name: "{{ item }}"
@@ -49,8 +50,8 @@
       ansible.windows.win_file:
         path: c:\nrjava
         state: absent
-    - name: Start windows services
-      ansible.windows.win_service:
-        name: "{{ item }}"
-        state: started
-      loop: "{{ java_upgrade_agent_restart_services }}"
+
+- name: Template Config
+  ansible.windows.win_template:
+    src: newrelic.yml.j2
+    dest: "{{ java_vars.directories.config }}\\newrelic.yml"
