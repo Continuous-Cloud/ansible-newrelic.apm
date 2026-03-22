@@ -52,5 +52,5 @@
     - name: Start windows services
       ansible.windows.win_service:
         name: "{{ item }}"
-        state: running
+        state: started
       loop: "{{ java_upgrade_agent_restart_services }}"
